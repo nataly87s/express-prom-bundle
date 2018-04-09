@@ -17,12 +17,12 @@
   "license": "MIT",
   "dependencies": {
     "on-finished": "^2.3.0",
-    "prom-client": "~10.2.2",
+    "prom-client": "~11.0.0",
     "url-value-parser": "^1.0.0"
   },
   "devDependencies": {
     "coveralls": "^2.13.1",
-    "eslint": "^3.19.0",
+    "eslint": "^4.19.1",
     "express": "^4.15.3",
     "istanbul": "^0.4.5",
     "jasme": "^5.2.0",
@@ -33,9 +33,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jochen-schweizer/express-prom-bundle.git"
+    "url": "https://github.com/nataly87s/express-prom-bundle.git"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   }
 }

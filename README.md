@@ -9,7 +9,7 @@ Internally it uses **prom-client**. See: https://github.com/siimon/prom-client
 Included metrics:
 
 * `up`: normally is just 1
-* `http_request_duration_seconds`: http latency histogram labeled with `status_code`, `method` and `path`
+* `http_request_duration_milliseconds`: http latency summary labeled with `status_code`, `method` and `path`
 
 ## Install
 
@@ -42,7 +42,7 @@ See the example below.
 
 ## Options
 
-Which labels to include in `http_request_duration_seconds` metric:
+Which labels to include in `http_request_duration_milliseconds` metric:
 
 * **includeStatusCode**: HTTP status code (200, 400, 404 etc.), default: **true**
 * **includeMethod**: HTTP method (GET, PUT, ...), default: **false**
@@ -58,7 +58,7 @@ Extra transformation callbacks:
 
 Other options:
 
-* **buckets**: buckets used for `http_request_duration_seconds` histogram
+* **percentiles**: percentiles used for `http_request_duration_milliseconds` summary
 * **autoregister**: if `/metrics` endpoint should be registered. (Default: **true**)
 * **promClient**: options for promClient startup, e.g. **collectDefaultMetrics**. This option was added
   to keep `express-prom-bundle` runnable using confit (e.g. with kraken.js) without writing any JS code,
@@ -67,8 +67,8 @@ Other options:
 Deprecated:
 
 * **whitelist**, **blacklist**: array of strings or regexp specifying which metrics to include/exclude (there are only 2 metrics)
-* **excludeRoutes**: array of strings or regexp specifying which routes should be skipped for `http_request_duration_seconds` metric. It uses `req.originalUrl` as subject when checking. You want to use express or meddleware features instead of this option.
-* **httpDurationMetricName**: name of the request duration histogram metric. (Default: `http_request_duration_seconds`)
+* **excludeRoutes**: array of strings or regexp specifying which routes should be skipped for `http_request_duration_milliseconds` metric. It uses `req.originalUrl` as subject when checking. You want to use express or meddleware features instead of this option.
+* **httpDurationMetricName**: name of the request duration summary metric. (Default: `http_request_duration_milliseconds`)
 
 ### More details on includePath option
 
@@ -163,7 +163,7 @@ Here is meddleware config sample, which can be used in a standard **kraken.js** 
         "arguments": [
           {
             "includeMethod": true,
-            "buckets": [0.1, 1, 5],
+            "percentiles": [0.5, 0.75, 0.95],
             "promClient": {
               "collectDefaultMetrics": {
                 "timeout": 2000
@@ -178,6 +178,8 @@ Here is meddleware config sample, which can be used in a standard **kraken.js** 
 ```
 
 ## Changelog
+ * **4.0.0**
+    * use summary instead of histogram
 
  * **3.3.0**
     * added option **promClient** to be able to call collectDefaultMetrics

@@ -34,7 +34,7 @@ describe('index', () => {
     });
   });
 
-  it('httpDurationMetricName overrides histogram metric name', done => {
+  it('httpDurationMetricName overrides summary metric name', done => {
     const app = express();
     const bundled = bundle({
       httpDurationMetricName: 'my_http_duration'
@@ -85,12 +85,12 @@ describe('index', () => {
   it('metrics can be filtered using exect match', () => {
     const instance = bundle({blacklist: ['up']});
     expect(instance.metrics.up).not.toBeDefined();
-    expect(instance.metrics.http_request_duration_seconds).toBeDefined();
+    expect(instance.metrics.http_request_duration_milliseconds).toBeDefined();
   });
   it('metrics can be filtered using regex', () => {
     const instance = bundle({blacklist: [/http/]});
     expect(instance.metrics.up).toBeDefined();
-    expect(instance.metrics.http_request_duration_seconds).not.toBeDefined();
+    expect(instance.metrics.http_request_duration_milliseconds).not.toBeDefined();
   });
   it('metrics can be whitelisted', () => {
     const instance = bundle({whitelist: [/^up$/]});
@@ -122,7 +122,7 @@ describe('index', () => {
     agent
       .get('/test')
       .end(() => {
-        const metricHashMap = instance.metrics.http_request_duration_seconds.hashMap;
+        const metricHashMap = instance.metrics.http_request_duration_milliseconds.hashMap;
         expect(metricHashMap['status_code:200']).toBeDefined();
         const labeled = metricHashMap['status_code:200'];
         expect(labeled.count).toBe(1);
@@ -147,7 +147,7 @@ describe('index', () => {
     agent
       .get('/test')
       .end(() => {
-        const metricHashMap = instance.metrics.http_request_duration_seconds.hashMap;
+        const metricHashMap = instance.metrics.http_request_duration_milliseconds.hashMap;
         expect(metricHashMap['status_code:200']).not.toBeDefined();
 
         agent

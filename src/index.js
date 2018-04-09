@@ -71,7 +71,7 @@ function main(opts) {
     promClient.collectDefaultMetrics(opts.promClient.collectDefaultMetrics);
   }
 
-  const httpMetricName = opts.httpDurationMetricName || 'http_request_duration_seconds';
+  const httpMetricName = opts.httpDurationMetricName || 'http_request_duration_milliseconds';
 
   const metricTemplates = {
     'up': () => new promClient.Gauge({
@@ -89,11 +89,11 @@ function main(opts) {
       if (opts.customLabels){
         labels.push.apply(labels, Object.keys(opts.customLabels));
       }
-      const metric = new promClient.Histogram({
+      const metric = new promClient.Summary({
         name: httpMetricName,
-        help: 'duration histogram of http responses labeled with: ' + labels.join(', '),
+        help: 'duration summary of http responses labeled with: ' + labels.join(', '),
         labelNames: labels,
-        buckets: opts.buckets || [0.003, 0.03, 0.1, 0.3, 1.5, 10]
+        percentiles: opts.percentiles || [0.5, 0.9, 0.99]
       });
       return metric;
     }
@@ -129,7 +129,7 @@ function main(opts) {
 
     if (metrics[httpMetricName]) {
       labels = {};
-      let timer = metrics[httpMetricName].startTimer(labels);
+      let timer =  metrics[httpMetricName].startTimer(labels);
       onFinished(res, () => {
         if (opts.includeStatusCode) {
           labels.status_code = opts.formatStatusCode(res, opts);

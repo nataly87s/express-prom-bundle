@@ -6,7 +6,7 @@ const promBundle = require('express-prom-bundle');
 
 const bundle = promBundle({
   blacklist: [/up/],
-  buckets: [0.1, 0.4, 0.7],
+  percentiles: [0.1, 0.4, 0.7],
   includeMethod: true,
   includePath: true,
   customLabels: {year: null},
